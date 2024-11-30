@@ -28,6 +28,7 @@ Class Action {
 			return 2;
 		}
 	}
+    asdas
 	function logout(){
 		session_destroy();
 		foreach ($_SESSION as $key => $value) {
