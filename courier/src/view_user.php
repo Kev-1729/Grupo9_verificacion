@@ -14,9 +14,8 @@ if (isset($_GET['id'])) {
     if ($qry = $result->fetch_assoc()) {
         $data = $qry; // Guardamos los datos en $data solo si hay resultados
     } else {
-        // Si no hay resultados, puedes mostrar un mensaje o redirigir
         echo "No se encontraron resultados para este usuario.";
-        exit; // Detiene la ejecución del código si no hay resultados
+        exit; 
     }
 }
 ?>
