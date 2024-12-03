@@ -1,9 +1,9 @@
-<?php include 'db_connect.php' ?>
+<?php include'db_connect.php' ?>
 <div class="col-lg-12">
 	<div class="card card-outline card-primary">
 		<div class="card-header">
 			<div class="card-tools">
-				<a class="btn btn-block btn-sm btn-default btn-flat border-primary " href="index.php?page=new_staff"><i class="fa fa-plus"></i> Agregar Nuevo</a>
+				<a class="btn btn-block btn-sm btn-default btn-flat border-primary " href="./index.php?page=new_staff"><i class="fa fa-plus"></i> Agregar Nuevo</a>
 			</div>
 		</div>
 		<div class="card-body">

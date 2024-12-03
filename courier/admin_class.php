@@ -175,6 +175,57 @@ Class Action {
 		if($delete)
 			return 1;
 	}
+
+	function save_system_settings(){
+		extract($_POST);
+		$data = '';
+		foreach($_POST as $k => $v){
+			if(!is_numeric($k)){
+				if(empty($data)){
+					$data .= " $k='$v' ";
+				}else{
+					$data .= ", $k='$v' ";
+				}
+			}
+		}
+		if($_FILES['cover']['tmp_name'] != ''){
+			$fname = strtotime(date('y-m-d H:i')).'_'.$_FILES['cover']['name'];
+			$move = move_uploaded_file($_FILES['cover']['tmp_name'],'../assets/uploads/'. $fname);
+			$data .= ", cover_img = '$fname' ";
+
+		}
+		$chk = $this->db->query("SELECT * FROM system_settings");
+		if($chk->num_rows > 0){
+			$save = $this->db->query("UPDATE system_settings set $data where id =".$chk->fetch_array()['id']);
+		}else{
+			$save = $this->db->query("INSERT INTO system_settings set $data");
+		}
+		if($save){
+			foreach($_POST as $k => $v){
+				if(!is_numeric($k)){
+					$_SESSION['system'][$k] = $v;
+				}
+			}
+			if($_FILES['cover']['tmp_name'] != ''){
+				$_SESSION['system']['cover_img'] = $fname;
+			}
+			return 1;
+		}
+	}
+	function save_image(){
+		extract($_FILES['file']);
+		if(!empty($tmp_name)){
+			$fname = strtotime(date("Y-m-d H:i"))."_".(str_replace(" ","-",$name));
+			$move = move_uploaded_file($tmp_name,'../assets/uploads/'. $fname);
+			$protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https'?'https':'http';
+			$hostName = $_SERVER['HTTP_HOST'];
+			$path =explode('/',$_SERVER['PHP_SELF']);
+			$currentPath = '/'.$path[1]; 
+			if($move){
+				return $protocol.'://'.$hostName.$currentPath.'/assets/uploads/'.$fname;
+			}
+		}
+	}
 	function save_branch(){
 		extract($_POST);
 		$data = "";

@@ -19,7 +19,7 @@ header("location:index.php?page=home");
 
 ?>
 <?php include 'header.php' ?>
-<body class="hold-transition login-page" style="background-image: url('../assets/uploads/iniciopantalla.jpeg'); background-size: cover; background-position: center;">
+<body class="hold-transition login-page" style="background-image: url('assets/uploads/iniciopantalla.jpeg'); background-size: cover; background-position: center;">
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
