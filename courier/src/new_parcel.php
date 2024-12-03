@@ -130,7 +130,7 @@
   	<div class="card-footer border-top border-info">
   		<div class="d-flex w-100 justify-content-center align-items-center">
   			<button class="btn btn-flat  bg-gradient-primary mx-2" form="manage-parcel">Guardar</button>
-  			<a class="btn btn-flat bg-gradient-secondary mx-2" href="./index.php?page=parcel_list">Cancelar</a>
+  			<a class="btn btn-flat bg-gradient-secondary mx-2" href="index.php?page=parcel_list">Cancelar</a>
   		</div>
   	</div>
 	</div>
