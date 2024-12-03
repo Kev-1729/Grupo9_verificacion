@@ -67,7 +67,6 @@ Class Action {
 		$check = $this->db->query("SELECT * FROM users where email ='$email' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
 		if($check > 0){
 			return 2;
-			exit;
 		}
 		if(empty($id)){
 			$save = $this->db->query("INSERT INTO users set $data");
