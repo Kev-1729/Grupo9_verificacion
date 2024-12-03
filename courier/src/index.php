@@ -125,7 +125,7 @@ include 'header.php'
   <footer class="main-footer">
 
     <div class="float-right d-none d-sm-inline-block">
-      <b>Grupo 06</b>
+      <b>Grupo 09</b>
     </div>
   </footer>
 </div>
