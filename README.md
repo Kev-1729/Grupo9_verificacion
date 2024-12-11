@@ -3,11 +3,10 @@
 1. [WEB Courier - Grupo 9](#web-courier---grupo-9)
 2. [Grupo 9 - Integrantes](#grupo-9---integrantes)
 3. [README - WEB COURIER](#readme---web-courier)
-   :::::::
-   - [Propósito del Proyecto](#propósito-del-proyecto)
-   - [Objetivo](#objetivo)
-   - [Funcionalidades principales](#funcionalidades-principales)
-5. [Integración con Jenkins](#integración-con-jenkins)
+   - [Propósito del Proyecto]()
+   - [Objetivo]()
+   - [Funcionalidades principales]()
+5. [Integración con Jenkins](#integración-con-Jenkins)
    - [Construcción Automática](#construcción-automática)
    - [Análisis Estático](#análisis-estático)
    - [Pruebas Unitarias](#pruebas-unitarias)
@@ -56,4 +55,45 @@ cliente en la gestión de pedidos para la empresa ASOLUR.
 ![image](https://github.com/user-attachments/assets/e362eec0-b3ea-4804-acac-7c97eae92ef5)
 
 ## Integración con Jenkins
+### Construcción Automática
+**Herramienta/Framework:** composer
+#### Comandos:
+```bash
+composer install
+composer validate
+```
+#### Integración con Jenkins:
+```groovy
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    dir('courier') {
+                        bat 'composer install'
+                    }
+                }
+            }
+        }
+```
+### Análisis estático
+**Herramienta/Framework:** SonarQube - Sonar Scanner
+#### Evidencia
+![image](https://github.com/user-attachments/assets/5f814e81-910e-49e9-b154-8e4fc8b56b91)
+
+#### Integración con Jenkins:
+```groovy
+        stage("SonarQube Analysis") {
+            steps {
+                bat """
+                $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ ^
+                -Dsonar.login=squ_9b0c8ece4c3265e51b0e9f175914ed6bd5fdab71 ^
+                -Dsonar.projectKey=test-php-proyecto-grupo-9 ^
+                -Dsonar.projectName=test-php-proyecto-grupo-9 ^
+                -Dsonar.java.binaries=. ^
+                -Dsonar.exclusions=**/.idea/**,**/assets/**,**/database/**
+                """
+            }
+        }
+```
+
+
 
