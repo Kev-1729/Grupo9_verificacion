@@ -6,18 +6,24 @@ class Action
 {
 	private $db;
 
-	public function __construct()
-	{
-		ob_start();
-		include 'db_connect.php';
-		$this->db = $conn;
-	}
+    public function __construct($db = null)
+    {
+        ob_start();
+        if ($db) {
+            $this->db = $db;
+        } else {
+            $conn = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db') or die("No se pudo conectar a mysql" . mysqli_error($con));
+            $this->db = $conn;
+        }
+    }
 
-	function __destruct()
-	{
-		$this->db->close();
-		ob_end_flush();
-	}
+    function __destruct()
+    {
+        if ($this->db !== null && $this->db instanceof mysqli) {
+            $this->db->close();
+        }
+        ob_end_flush();
+    }
 
 	// Helper methods
 	private function prepareData(array $postData, array $excludedKeys = []): array
