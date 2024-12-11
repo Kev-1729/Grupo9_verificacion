@@ -44,5 +44,29 @@ pipeline {
                 }
             }
         }
+        stage('Preparar entorno') {
+            steps {
+                script {
+                    echo "Creacion de carpetas"
+                    bat '''
+                        if not exist "%WORKSPACE%\\JmeterCodigo" mkdir "%WORKSPACE%\\JmeterCodigo"
+                        if not exist "%WORKSPACE%\\Prueba01" mkdir "%WORKSPACE%\\Prueba01"
+                        if not exist "%WORKSPACE%\\Prueba01\\html-report" mkdir "%WORKSPACE%\\Prueba01\\html-report"
+                    '''
+                    echo "Verificando instalación de JMeter..."
+                    bat "jmeter -v"
+                }
+            }
+        }
+        stage('Ejecutar prueba JMeter') {
+            steps {
+                script {
+                    echo "Ejecutando prueba JMeter..."
+                    bat '''
+                    jmeter -n -t "%WORKSPACE%\\JmeterCodigo\\Test_plan.jmx" -l "%WORKSPACE%\\Prueba01\\logs.jtl" -e -o "%WORKSPACE%\\Prueba01\\html-report"
+                    '''
+                }
+            }
+        }
     }
 }
