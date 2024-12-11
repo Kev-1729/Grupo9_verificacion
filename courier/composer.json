@@ -2,7 +2,7 @@
     "name": "kev-1729/grupo9-verificacion",
     "description": "Proyecto de verificación con pruebas funcionales y dependencias requeridas.",
     "require": {
-        "php": "^8.1",
-        "monolog/monolog": "^2.9"
+        "php": "^8.0",
+        "monolog/monolog": "2.0"
     }
 }
