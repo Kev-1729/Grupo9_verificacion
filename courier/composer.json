@@ -3,11 +3,12 @@
     "description": "Proyecto de verificación con pruebas funcionales y dependencias requeridas.",
     "require": {
         "php": "^8.0",
-        "monolog/monolog": "2.1"
+        "monolog/monolog": "^2.1"
     },
     "autoload": {
         "psr-4": {
             "Grupo9\\": "courier/"
         }
-    }
+    },
+    "license": "proprietary"
 }
