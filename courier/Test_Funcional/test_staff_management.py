@@ -2,12 +2,17 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import random
+
+n1 = random.randint(1, 99)  # Genera un número entero entre 1 y 10
+n2 = random.randint(1, 99)  # Genera un número entero entre 1 y 10
+
 
 class TestStaffManagement(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Edge()
-        self.web_site = "http://localhost/courier/login.php"
+        self.web_site = "http://localhost/Grupo9_verificacion/courier/login.php"
         self.driver.maximize_window()
         self.driver.get(self.web_site)
 
@@ -18,7 +23,7 @@ class TestStaffManagement(unittest.TestCase):
 
         self.primer_nombre = "Kevin"
         self.apellido = "Tupac Aguero"
-        self.email = "kev@unmsm.edu.pe"
+        self.email = f"kevfd{n2}e{n1}@unmsm.edu.pe"
         self.contrasena = "123456"
 
         self.email2 = "Kevin"
@@ -51,7 +56,7 @@ class TestStaffManagement(unittest.TestCase):
         self.driver.find_element(By.XPATH, '//*[@id="manage-staff"]/div/div/div[5]/div/input').send_keys(self.contrasena)
         self.driver.find_element(By.XPATH, '/html/body/div/div[1]/section/div/div/div/div[2]/div/button').click()
         time.sleep(5)
-        self.assertEqual(self.driver.current_url, "http://localhost/courier/index.php?page=staff_list")
+        self.assertEqual(self.driver.current_url, "http://localhost/Grupo9_verificacion/courier/index.php?page=staff_list")
 
     def test_incorrect_scenario_1(self): #Primer nombre vacio
         print("Test Nombre Vacio")
@@ -98,7 +103,6 @@ class TestStaffManagement(unittest.TestCase):
         time.sleep(1)
         # Verificar mensaje de error
         error_message = mensaje_email.get_attribute("validationMessage")
-        print(error_message)
         self.assertEqual(error_message, f"Incluye \"@\" en la dirección de correo electrónico. En \"{self.email2}\" falta un símbolo \"@\".")
         
     def test_incorrect_scenario_3(self): # email ya existe
