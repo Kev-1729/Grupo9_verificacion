@@ -44,7 +44,7 @@ pipeline {
                 }
             }
         }
-        stage('Preparar entorno') {
+        stage('Prepare environment') {
             steps {
                 script {
                     echo "Creacion de carpetas"
@@ -58,10 +58,10 @@ pipeline {
                 }
             }
         }
-        stage('Ejecutar prueba JMeter') {
+        stage('Run JMeter test') {
             steps {
                 script {
-                    echo "Ejecutando prueba JMeter..."
+                    echo "Ejecucion de JMeter"
                     bat '''
                     jmeter -n -t "%WORKSPACE%\\JmeterCodigo\\Test_plan.jmx" -l "%WORKSPACE%\\Prueba01\\logs.jtl" -e -o "%WORKSPACE%\\Prueba01\\html-report"
                     '''
