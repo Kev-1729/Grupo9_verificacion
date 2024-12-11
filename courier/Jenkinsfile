@@ -31,5 +31,18 @@ pipeline {
                 """
             }
         }
+        stage('Functional Tests') {
+            steps {
+                script {
+                    dir('courier/Test_Funcional') {
+                        // Instalar las dependencias necesarias para Selenium (si aplica)
+                        bat 'pip install -r requirements.txt'
+
+                        // Ejecutar las pruebas funcionales
+                        bat 'python -m unittest discover -s . -p "*.py"'
+                    }
+                }
+            }
+        }
     }
 }
