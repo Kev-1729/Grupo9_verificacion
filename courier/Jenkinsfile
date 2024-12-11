@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                // Definir manualmente el repositorio y las credenciales
+                git branch: 'main', url: 'https://github.com/Kev-1729/Grupo9_verificacion.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    dir('courier') {
+                        bat 'composer install'
+                    }
+                }
+            }
+        }
+        stage("SonarQube Analysis") {
+            steps {
+                bat """
+                $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ ^
+                -Dsonar.login=squ_9b0c8ece4c3265e51b0e9f175914ed6bd5fdab71 ^
+                -Dsonar.projectKey=test-php-proyecto-grupo-9 ^
+                -Dsonar.projectName=test-php-proyecto-grupo-9 ^
+                -Dsonar.java.binaries=. ^
+                -Dsonar.exclusions=**/.idea/**,**/assets/**,**/database/**
+                """
+            }
+        }
+    }
+}
