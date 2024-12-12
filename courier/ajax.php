@@ -5,71 +5,82 @@ date_default_timezone_set("Asia/Manila");
 $action = $_GET['action'];
 include 'admin_class.php';
 $crud = new Action();
-if ($action == 'login') {
+if($action == 'login'){
 	$login = $crud->login();
-	if ($login)
+	if($login)
 		echo $login;
 }
-if ($action == 'login2') {
+if($action == 'login2'){
 	$login = $crud->login2();
-	if ($login)
+	if($login)
 		echo $login;
 }
-if ($action == 'logout') {
+if($action == 'logout'){
 	$logout = $crud->logout();
-	if ($logout)
+	if($logout)
+		echo $logout;
+}
+if($action == 'logout2'){
+	$logout = $crud->logout2();
+	if($logout)
 		echo $logout;
 }
 
-if ($action == 'save_user') {
+if($action == 'signup'){
+	$save = $crud->signup();
+	if($save)
+		echo $save;
+}
+if($action == 'save_user'){
 	$save = $crud->save_user();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'update_user') {
+if($action == 'update_user'){
 	$save = $crud->update_user();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'delete_user') {
+if($action == 'delete_user'){
 	$save = $crud->delete_user();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'save_branch') {
+if($action == 'save_branch'){
 	$save = $crud->save_branch();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'delete_branch') {
+if($action == 'delete_branch'){
 	$save = $crud->delete_branch();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'save_parcel') {
+if($action == 'save_parcel'){
 	$save = $crud->save_parcel();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'delete_parcel') {
+if($action == 'delete_parcel'){
 	$save = $crud->delete_parcel();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'update_parcel') {
+if($action == 'update_parcel'){
 	$save = $crud->update_parcel();
-	if ($save)
+	if($save)
 		echo $save;
 }
-if ($action == 'get_parcel_history') {
-	$get = $crud->get_parcel_history();
-	if ($get)
+if($action == 'get_parcel_heistory'){
+	$get = $crud->get_parcel_heistory();
+	if($get)
 		echo $get;
 }
 
-if ($action == 'get_report') {
+if($action == 'get_report'){
 	$get = $crud->get_report();
-	if ($get)
+	if($get)
 		echo $get;
 }
 ob_end_flush();
+?>
