@@ -9,172 +9,148 @@ class TestFunctions extends TestCase
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        // Configurar una base de datos en memoria para pruebas
+        $this->db = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db');
+        $this->db->query("CREATE TEMPORARY TABLE users (
+            id INT AUTO_INCREMENT PRIMARY KEY, 
+            firstname VARCHAR(50), 
+            lastname VARCHAR(50), 
+            email VARCHAR(50), 
+            password VARCHAR(255)
+        )");
+        // Crear instancia de la clase Action con base de datos simulada
+        $this->action = new Action($this->db);
     }
 
     public function testLoginSuccess()
     {
-        // Datos simulados de $_POST
-        $_POST['email'] = 'test@example.com';
-        $_POST['password'] = 'password';
+        // Preparar datos en la base de datos
+        $hashedPassword = md5('password123');
+        $this->db->query("INSERT INTO users (firstname, lastname, email, password) 
+                          VALUES ('John', 'Doe', 'john.doe@example.com', '$hashedPassword')");
 
-        // Configurar una base de datos simulada
-        $db = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db');
+        // Simular datos POST
+        $_POST = [
+            'email' => 'john.doe@example.com',
+            'password' => 'password123'
+        ];
+        $_SESSION = []; // Asegurar una sesión limpia
 
-        // Simular la creación de un usuario
-        $db->query("CREATE TEMPORARY TABLE users (id INT, firstname VARCHAR(50), lastname VARCHAR(50), email VARCHAR(50), password VARCHAR(255))");
-        $db->query("INSERT INTO users VALUES (1, 'John', 'Doe', 'test@example.com', '" . md5('password') . "')");
+        // Ejecutar login()
+        $result = $this->action->login();
 
-        // Lógica de la función login
-        $email = $_POST['email'];
-        $password = md5($_POST['password']);
+        // Verificar que el login fue exitoso
+        $this->assertEquals(1, $result); // Resultado 1 indica éxito
 
-        $query = $db->query("SELECT * FROM users WHERE email = '$email' AND password = '$password'");
-        if ($query->num_rows > 0) {
-            $user = $query->fetch_assoc();
-            $_SESSION['login_name'] = $user['firstname'] . ' ' . $user['lastname'];
-            $_SESSION['login_email'] = $user['email'];
-            $result = 1; // Éxito
-        } else {
-            $result = 2; // Fallo
-        }
-
-        // Verificar resultados
-        $this->assertEquals(1, $result);
+        // Comprobar que los datos de sesión son correctos
         $this->assertEquals('John Doe', $_SESSION['login_name']);
-        $this->assertEquals('test@example.com', $_SESSION['login_email']);
-
-        // Limpiar la base de datos temporal
-        $db->close();
+        $this->assertEquals('john.doe@example.com', $_SESSION['login_email']);
     }
 
     public function testLoginFailure()
     {
-        // Datos simulados de $_POST
-        $_POST['email'] = 'wrong@example.com';
-        $_POST['password'] = 'wrongpassword';
+        // Preparar datos en la base de datos
+        $hashedPassword = md5('password123');
+        $this->db->query("INSERT INTO users (firstname, lastname, email, password) 
+                          VALUES ('John', 'Doe', 'john.doe@example.com', '$hashedPassword')");
 
-        // Configurar una base de datos simulada
-        $db = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db');
+        // Simular datos POST incorrectos
+        $_POST = [
+            'email' => 'wrong.email@example.com',
+            'password' => 'wrongpassword'
+        ];
+        $_SESSION = []; // Asegurar una sesión limpia
 
-        // Simular la creación de un usuario
-        $db->query("CREATE TEMPORARY TABLE users (id INT, firstname VARCHAR(50), lastname VARCHAR(50), email VARCHAR(50), password VARCHAR(255))");
-        $db->query("INSERT INTO users VALUES (1, 'John', 'Doe', 'test@example.com', '" . md5('password') . "')");
+        // Ejecutar login()
+        $result = $this->action->login();
 
-        // Lógica de la función login
-        $email = $_POST['email'];
-        $password = md5($_POST['password']);
+        // Verificar que el login falló
+        $this->assertEquals(2, $result); // Resultado 2 indica fallo
 
-        $query = $db->query("SELECT * FROM users WHERE email = '$email' AND password = '$password'");
-        if ($query->num_rows > 0) {
-            $user = $query->fetch_assoc();
-            $_SESSION['login_name'] = $user['firstname'] . ' ' . $user['lastname'];
-            $_SESSION['login_email'] = $user['email'];
-            $result = 1; // Éxito
-        } else {
-            $result = 2; // Fallo
-        }
-
-        // Verificar resultados
-        $this->assertEquals(2, $result);
+        // Comprobar que la sesión sigue vacía
         $this->assertEmpty($_SESSION);
 
-        // Limpiar la base de datos temporal
-        $db->close();
     }
     public function testSaveUserSuccess()
     {
-        // Simulación de datos POST para crear un nuevo usuario
+        // Simular datos POST para la creación de un usuario
         $_POST = [
-            'email' => 'newuser@example.com',
+            'email' => 'jane.doe@example.com',
+            'password' => 'password123',
+            'firstname' => 'Jane',
+            'lastname' => 'Doe'
+        ];
+
+        // Ejecutar save_user()
+        $result = $this->action->save_user();
+
+        // Verificar que el usuario fue creado exitosamente
+        $this->assertEquals(1, $result); // Resultado 1 indica éxito
+
+        // Comprobar que el usuario existe en la base de datos
+        $query = $this->db->query("SELECT * FROM users WHERE email = 'jane.doe@example.com'");
+        $this->assertEquals(1, $query->num_rows);
+
+        // Verificar que la contraseña fue hasheada
+        $user = $query->fetch_assoc();
+        $this->assertTrue(password_verify('password123', $user['password']));
+
+    }
+
+    public function testSaveUserDuplicateEmail()
+    {
+        // Insertar un usuario existente
+        $password = password_hash('password123', PASSWORD_DEFAULT);
+        $this->db->query("INSERT INTO users (firstname, lastname, email, password) VALUES 
+            ('John', 'Doe', 'existing@example.com', '$password')");
+
+        // Simular datos POST con correo duplicado
+        $_POST = [
+            'email' => 'existing@example.com',
             'password' => 'newpassword',
             'firstname' => 'Jane',
             'lastname' => 'Smith'
         ];
 
-        // Configurar una base de datos simulada
-        $db = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db');
-        $db->query("CREATE TEMPORARY TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(50), lastname VARCHAR(50), email VARCHAR(50), password VARCHAR(255))");
+        // Ejecutar save_user()
+        $result = $this->action->save_user();
 
-        // Simulación de la función save_user()
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $check = $db->query("SELECT * FROM users WHERE email = '{$_POST['email']}'")->num_rows;
+        // Verificar que la función detectó el correo duplicado
+        $this->assertEquals(2, $result); // Resultado 2 indica correo duplicado
 
-        if ($check > 0) {
-            $result = 2; // Correo duplicado
-        } else {
-            $result = $db->query("INSERT INTO users (firstname, lastname, email, password) VALUES ('{$_POST['firstname']}', '{$_POST['lastname']}', '{$_POST['email']}', '$password')") ? 1 : 0;
-        }
-
-        // Verificar que el usuario fue creado exitosamente
-        $this->assertEquals(1, $result);
-        $query = $db->query("SELECT * FROM users WHERE email = '{$_POST['email']}'");
-        $this->assertEquals(1, $query->num_rows);
-
-        // Limpiar base de datos
-        $db->close();
     }
 
-    public function testSaveUserDuplicateEmail()
+    public function testSaveUserUpdateSuccess()
     {
-        // Simulación de datos POST para duplicar correo
+        // Insertar un usuario existente
+        $password = password_hash('password123', PASSWORD_DEFAULT);
+        $this->db->query("INSERT INTO users (firstname, lastname, email, password) VALUES 
+            ('John', 'Doe', 'update@example.com', '$password')");
+
+        // Simular datos POST para actualizar el usuario
         $_POST = [
-            'email' => 'duplicate@example.com',
-            'password' => 'password',
-            'firstname' => 'John',
-            'lastname' => 'Doe'
+            'id' => 1, // ID del usuario existente
+            'email' => 'update@example.com',
+            'password' => 'newpassword456',
+            'firstname' => 'John Updated',
+            'lastname' => 'Doe Updated'
         ];
 
-        // Configurar una base de datos simulada
-        $db = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db');
-        $db->query("CREATE TEMPORARY TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(50), lastname VARCHAR(50), email VARCHAR(50), password VARCHAR(255))");
-        $db->query("INSERT INTO users (firstname, lastname, email, password) VALUES ('John', 'Doe', 'duplicate@example.com', '" . password_hash('password', PASSWORD_DEFAULT) . "')");
-
-        // Simulación de la función save_user()
-        $check = $db->query("SELECT * FROM users WHERE email = '{$_POST['email']}'")->num_rows;
-        if ($check > 0) {
-            $result = 2; // Correo duplicado
-        } else {
-            $result = 1; // Éxito (no debería suceder)
-        }
-
-        // Verificar que el correo duplicado devuelve 2
-        $this->assertEquals(2, $result);
-
-        // Limpiar base de datos
-        $db->close();
-    }
-
-    public function testUpdateUserSuccess()
-    {
-        // Simulación de datos POST para actualizar un usuario existente
-        $_POST = [
-            'id' => 1,
-            'email' => 'updated@example.com',
-            'password' => 'newpassword',
-            'firstname' => 'Updated',
-            'lastname' => 'User'
-        ];
-
-        // Configurar una base de datos simulada
-        $db = new mysqli('localhost', 'root', '/]Fi8Iqn5)hkBSyG', 'cms_db');
-        $db->query("CREATE TEMPORARY TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(50), lastname VARCHAR(50), email VARCHAR(50), password VARCHAR(255))");
-        $db->query("INSERT INTO users (firstname, lastname, email, password) VALUES ('John', 'Doe', 'old@example.com', '" . password_hash('password', PASSWORD_DEFAULT) . "')");
-
-        // Simulación de la función save_user()
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $result = $db->query("UPDATE users SET firstname = '{$_POST['firstname']}', lastname = '{$_POST['lastname']}', email = '{$_POST['email']}', password = '$password' WHERE id = {$_POST['id']}") ? 1 : 0;
+        // Ejecutar save_user()
+        $result = $this->action->save_user();
 
         // Verificar que la actualización fue exitosa
         $this->assertEquals(1, $result);
-        $query = $db->query("SELECT * FROM users WHERE id = {$_POST['id']}");
+
+        // Comprobar los cambios en la base de datos
+        $query = $this->db->query("SELECT * FROM users WHERE id = 1");
+        $this->assertEquals(1, $query->num_rows);
+
         $user = $query->fetch_assoc();
+        $this->assertEquals('John Updated', $user['firstname']);
+        $this->assertEquals('Doe Updated', $user['lastname']);
+        $this->assertTrue(password_verify('newpassword456', $user['password']));
 
-        $this->assertEquals('updated@example.com', $user['email']);
-        $this->assertEquals('Updated', $user['firstname']);
-        $this->assertEquals('User', $user['lastname']);
-
-        // Limpiar base de datos
-        $db->close();
     }
 
     public function testSaveUserWithoutPassword()
@@ -211,5 +187,6 @@ class TestFunctions extends TestCase
         // Limpiar la sesión después de cada prueba
         session_unset();
         session_destroy();
+        ob_end_clean();
     }
 }

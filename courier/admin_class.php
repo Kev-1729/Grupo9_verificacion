@@ -22,10 +22,13 @@ class Action
         if ($this->db !== null && $this->db instanceof mysqli) {
             $this->db->close();
         }
-        ob_end_flush();
+        if (ob_get_level() > 0) { // Verifica si hay un buffer activo
+            ob_end_flush();
+        }
     }
 
-	// Helper methods
+
+    // Helper methods
 	private function prepareData(array $postData, array $excludedKeys = []): array
 	{
 		$data = [];
