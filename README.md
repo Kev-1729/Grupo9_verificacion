@@ -1,23 +1,22 @@
 # Índice
 
-1. [WEB Courier - Grupo 9](#web-courier---grupo-9)
+1. [Web Courier - Grupo 9](#web-courier---grupo-9)
 2. [Grupo 9 - Integrantes](#grupo-9---integrantes)
-3. [README - WEB COURIER](#readme---web-courier)
-   - [Propósito del Proyecto]()
-   - [Objetivo]()
-   - [Funcionalidades principales]()
-5. [Integración con Jenkins](#integración-con-Jenkins)
+3. [README - Web Courier](#readme---web-courier)
+   - [Proposito del Software](#proposito-del-software)
+   - [Alcance](#alcance)
+   - [Principales funciones](#principales-funciones)
+5. [Integración con Jenkins Pipeline](#integración-con-jenkins)
    - [Construcción Automática](#construcción-automática)
-   - [Análisis Estático](#análisis-estático)
+   - [Análisis estático](#análisis-estático)
    - [Pruebas Unitarias](#pruebas-unitarias)
    - [Pruebas Funcionales](#pruebas-funcionales)
    - [Pruebas de Rendimiento](#pruebas-de-rendimiento)
    - [Pruebas de Seguridad](#pruebas-de-seguridad)
 6. [Gestión de GitHub Issues](#gestión-de-github-issues)
 
-# WEB Courier - Grupo 9
+# Web Courier - Grupo 9
 - **Fecha**: 04/12/2024
-- **Versión**: v2.10
 
 ## Grupo 9 - Integrantes:
 - [Kevin Tupac Agüero](https://github.com/Kev-1729)
@@ -27,7 +26,7 @@
 - [Jocelyn Estrella Sotelo Arce](https://github.com/Jocelynsa23)
 - [Kenneth Evander Ortega Moran](https://github.com/lKennethl)
 
-# README - WEB COURIER
+# README - Web Courier
 
 ## Proposito del Software
 Mejorar significativamente la eficiencia en la gestión de pedidos de la empresa 
@@ -54,7 +53,7 @@ cliente en la gestión de pedidos para la empresa ASOLUR.
 - Estado del Paquete
 ![image](https://github.com/user-attachments/assets/e362eec0-b3ea-4804-acac-7c97eae92ef5)
 
-## Integración con Jenkins
+## Integración con Jenkins Pipeline
 ### Construcción Automática
 **Herramienta/Framework:** composer
 #### Comandos:
@@ -107,12 +106,17 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import random
+
+n1 = random.randint(1, 99)  # Genera un número entero entre 1 y 10
+n2 = random.randint(1, 99)  # Genera un número entero entre 1 y 10
+
 
 class TestStaffManagement(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Edge()
-        self.web_site = "http://localhost/courier/login.php"
+        self.web_site = "http://localhost/Grupo9_verificacion/courier/login.php"
         self.driver.maximize_window()
         self.driver.get(self.web_site)
 
@@ -123,7 +127,7 @@ class TestStaffManagement(unittest.TestCase):
 
         self.primer_nombre = "Kevin"
         self.apellido = "Tupac Aguero"
-        self.email = "kev@unmsm.edu.pe"
+        self.email = f"kevfd{n2}e{n1}@unmsm.edu.pe"
         self.contrasena = "123456"
 
         self.email2 = "Kevin"
@@ -156,7 +160,7 @@ class TestStaffManagement(unittest.TestCase):
         self.driver.find_element(By.XPATH, '//*[@id="manage-staff"]/div/div/div[5]/div/input').send_keys(self.contrasena)
         self.driver.find_element(By.XPATH, '/html/body/div/div[1]/section/div/div/div/div[2]/div/button').click()
         time.sleep(5)
-        self.assertEqual(self.driver.current_url, "http://localhost/courier/index.php?page=staff_list")
+        self.assertEqual(self.driver.current_url, "http://localhost/Grupo9_verificacion/courier/index.php?page=staff_list")
 
     def test_incorrect_scenario_1(self): #Primer nombre vacio
         print("Test Nombre Vacio")
@@ -203,7 +207,6 @@ class TestStaffManagement(unittest.TestCase):
         time.sleep(1)
         # Verificar mensaje de error
         error_message = mensaje_email.get_attribute("validationMessage")
-        print(error_message)
         self.assertEqual(error_message, f"Incluye \"@\" en la dirección de correo electrónico. En \"{self.email2}\" falta un símbolo \"@\".")
         
     def test_incorrect_scenario_3(self): # email ya existe
