@@ -395,11 +395,24 @@ stage('Prepare environment') {
         }
 ```
 ### Pruebas de Seguridad
-- Kenneth Evander
+**Herramienta:** ZAP
+#### Evidencia:
+```xml
+stage('Start ZAP') {
+            steps {
+                dir("C:/ZAP/ZAP/Zed Attack Proxy") {
+                    bat ''' 
+                    zap.bat -port 8081 -cmd -quickurl http://localhost/Grupo9_verificacion/courier/login.php -quickout ./report.html -quickprogress 
+                    '''
+                }
+            }
+        }
+```
 ### Gestión de GitHub Issues
 #### Github Proyects:
-[Repositorio de Issues en GitHub](https://github.com/users/Cristh715/projects/2)
+[Repositorio de Issues en GitHub](https://github.com/users/Kev-1729/projects/2)
 #### Evidencia:
+![image](https://github.com/user-attachments/assets/524dec62-05d9-4990-a228-50fa8212cc56)
 
 
 
