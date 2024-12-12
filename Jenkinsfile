@@ -6,8 +6,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                // Definir manualmente el repositorio y las credenciales
-                git branch: 'main', url: 'https://github.com/Kev-1729/Grupo9_verificacion.git'
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GithubToken', url: 'https://github.com/Kev-1729/Grupo9_verificacion']])
             }
         }
         stage('Install Dependencies') {
