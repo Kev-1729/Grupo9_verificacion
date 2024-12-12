@@ -46,6 +46,8 @@ una solución completa e innovadora que eleve la eficiencia operativa y la satis
 cliente en la gestión de pedidos para la empresa ASOLUR.
 
 ## Principales funciones 
+- Login
+  ![image](https://github.com/user-attachments/assets/f4984776-43b6-49ad-b85d-deac1e13a5a9)
 - Menu de Resumen
 ![image](https://github.com/user-attachments/assets/e9b5b3b2-4670-4afc-a96d-5675a3fbc374)
 - Agregacion de Nuevo Personal
@@ -58,8 +60,8 @@ cliente en la gestión de pedidos para la empresa ASOLUR.
 **Herramienta/Framework:** composer
 #### Comandos:
 ```bash
+composer update
 composer install
-composer validate
 ```
 #### Integración con Jenkins:
 ```groovy
@@ -67,6 +69,7 @@ composer validate
             steps {
                 script {
                     dir('courier') {
+                        bat 'composer update'
                         bat 'composer install'
                     }
                 }
@@ -80,6 +83,9 @@ composer validate
 
 #### Integración con Jenkins:
 ```groovy
+         environment {
+                 SCANNER_HOME = tool 'sonar-scanner'
+         }
         stage("SonarQube Analysis") {
             steps {
                 bat """
@@ -91,13 +97,22 @@ composer validate
                 -Dsonar.exclusions=**/.idea/**,**/assets/**,**/database/**
                 """
             }
-        }
 ```
 ### Pruebas unitarias
-**Herramienta/Framework:** Jest para Node.js
+**Herramienta/Framework:** PhpUnit
 #### Evidencia:
+![image](https://github.com/user-attachments/assets/80c283f2-b52d-4378-ab30-bdb49a6a15e7)
 #### Integración con Jenkins:
-- Sneyder y Joscelyn
+```groovy
+        }stage('Run Specific Unit Test') {
+            steps {
+                script {
+                        bat './courier/vendor/bin/phpunit Test/Unity_Testing/TestFunctions.php --log-junit test-results.xml'
+                }
+            }
+        }
+```
+
 ### Pruebas Funcionales
 **Herramienta/Framework:** Selenium
 #### Evidencia:
@@ -243,15 +258,17 @@ if __name__ == "__main__":
 
 #### Integración con Jenkins:
 ```groovy
-stage('Run Functional Tests') {
-    steps {
-        script {
-            dir('client') {
-                bat 'npm test'
+stage('Functional Tests') {
+            steps {
+                script {
+                    dir('Test/Test_Funcional') {
+                        bat 'pip install -r requirements.txt'
+
+                        bat 'python -m unittest discover -s . -p "*.py"'
+                    }
+                }
             }
         }
-    }
-}
 ```
 ### Pruebas de Rendimiento
 
