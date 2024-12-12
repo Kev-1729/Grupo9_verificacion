@@ -3,12 +3,19 @@
     "description": "Proyecto de verificación con pruebas funcionales y dependencias requeridas.",
     "require": {
         "php": "^8.0",
-        "monolog/monolog": "^2.1"
+        "monolog/monolog": "^2.1",
+        "ext-mysqli": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11"
     },
     "autoload": {
         "psr-4": {
             "Grupo9\\": "courier/"
-        }
+        },
+        "classmap": [
+            "../courier/"
+        ]
     },
     "license": "proprietary"
 }
