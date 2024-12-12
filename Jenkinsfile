@@ -13,6 +13,7 @@ pipeline {
             steps {
                 script {
                     dir('courier') {
+                        bat 'composer update'
                         bat 'composer install'
                     }
                 }
@@ -30,14 +31,19 @@ pipeline {
                 """
             }
         }
+        stage('Run Specific Unit Test') {
+            steps {
+                script {
+                        bat './courier/vendor/bin/phpunit Test/Unity_Testing/TestFunctions.php --log-junit test-results.xml'
+                }
+            }
+        }
         stage('Functional Tests') {
             steps {
                 script {
-                    dir('Test') {
-                        // Instalar las dependencias necesarias para Selenium (si aplica)
+                    dir('Test/Test_Funcional') {
                         bat 'pip install -r requirements.txt'
 
-                        // Ejecutar las pruebas funcionales
                         bat 'python -m unittest discover -s . -p "*.py"'
                     }
                 }
@@ -63,6 +69,15 @@ pipeline {
                     echo "Ejecucion de JMeter"
                     bat '''
                     jmeter -n -t "%WORKSPACE%\\JmeterCodigo\\Test_plan.jmx" -l "%WORKSPACE%\\Prueba01\\logs.jtl" -e -o "%WORKSPACE%\\Prueba01\\html-report"
+                    '''
+                }
+            }
+        }
+        stage('Start ZAP') {
+            steps {
+                dir("C:/ZAP/ZAP/Zed Attack Proxy") {
+                    bat ''' 
+                    zap.bat -port 8081 -cmd -quickurl http://localhost/Grupo9_verificacion/courier/login.php -quickout ./report.html -quickprogress 
                     '''
                 }
             }
