@@ -43,7 +43,7 @@ excepciones e inventario, ofreciendo una plataforma integral que centralice y au
 estas operaciones. El proyecto busca optimizar procesos, mejorar la toma de decisiones, 
 personalizar la plataforma según las necesidades específicas de cada empresa y proporcionar 
 una solución completa e innovadora que eleve la eficiencia operativa y la satisfacción del 
-cliente en la gestión de pedidos para la empresa ASOLUR.
+cliente en la gestión de pedidos para la empresa ASOLUR .
 
 ## Principales funciones 
 - Menu de Resumen
