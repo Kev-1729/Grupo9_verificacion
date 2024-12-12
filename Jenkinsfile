@@ -34,7 +34,7 @@ pipeline {
         stage('Functional Tests') {
             steps {
                 script {
-                    dir('courier/Test_Funcional') {
+                    dir('Test') {
                         // Instalar las dependencias necesarias para Selenium (si aplica)
                         bat 'pip install -r requirements.txt'
 
